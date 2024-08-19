@@ -1,9 +1,23 @@
 import { usePokemonStore } from "../../store/pokeStore";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
+interface StockHistory {
+  date: Date;
+  activity: string;
+  change: number;
+  note?: string;
+}
+
+interface Pokemon {
+  name: string;
+  stock: number;
+  history: StockHistory[];
+}
 
 function Home() {
-  const { pokemons, search, setSearch } = usePokemonStore();
+  const { pokemons, setPokemons, search, setSearch } = usePokemonStore();
   const navigate = useNavigate();
 
   const filteredPokemons = pokemons.filter((pokemon) =>
@@ -13,6 +27,41 @@ function Home() {
   const handleRowClick = (name: string) => {
     navigate(`/pokemon/${name}`);
   };
+
+  useEffect(() => {
+    if (pokemons.length === 0) {
+      const fetchPokemons = async () => {
+        try {
+          const response = await axios.get(
+            "https://pokeapi.co/api/v2/pokemon?limit=10"
+          );
+          const pokemons = response.data.results.map((pokemon: Pokemon) => ({
+            ...pokemon,
+            stock: 10,
+            history: [
+              {
+                date: new Date().toLocaleString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }),
+                activity: "Stok Awal",
+                change: 10,
+                totalStock: 10,
+              },
+            ],
+          }));
+          setPokemons(pokemons);
+        } catch (error) {
+          console.error("Failed to fetch pokemons", error);
+        }
+      };
+
+      fetchPokemons();
+    }
+  }, [pokemons, setPokemons]);
 
   return (
     <Container>
