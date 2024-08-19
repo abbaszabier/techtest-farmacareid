@@ -2,6 +2,45 @@ import { ReactNode } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
 
+type DynamicModalProps = {
+  isOpen: boolean;
+  onRequestClose: () => void;
+  onSave: () => void;
+  title: string;
+  body: ReactNode;
+  saveButtonText?: string;
+  cancelButtonText?: string;
+};
+
+function DynamicModal({
+  isOpen,
+  onRequestClose,
+  onSave,
+  title,
+  body,
+  saveButtonText = "Simpan",
+  cancelButtonText = "Batal",
+}: DynamicModalProps) {
+  return (
+    <StyledModal
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
+      contentLabel={title}
+    >
+      <div className="modal-content">
+        <Title>{title}</Title>
+        <Body>{body}</Body>
+        <ButtonGroup>
+          <button onClick={onSave}>{saveButtonText}</button>
+          <button onClick={onRequestClose}>{cancelButtonText}</button>
+        </ButtonGroup>
+      </div>
+    </StyledModal>
+  );
+}
+
+export default DynamicModal;
+
 const StyledModal = styled(Modal)`
   display: flex;
   justify-content: center;
@@ -58,44 +97,3 @@ const ButtonGroup = styled.div`
     }
   }
 `;
-
-Modal.setAppElement("#root");
-
-type DynamicModalProps = {
-  isOpen: boolean;
-  onRequestClose: () => void;
-  onSave: () => void;
-  title: string;
-  body: ReactNode;
-  saveButtonText?: string;
-  cancelButtonText?: string;
-};
-
-function DynamicModal({
-  isOpen,
-  onRequestClose,
-  onSave,
-  title,
-  body,
-  saveButtonText = "Simpan",
-  cancelButtonText = "Batal",
-}: DynamicModalProps) {
-  return (
-    <StyledModal
-      isOpen={isOpen}
-      onRequestClose={onRequestClose}
-      contentLabel={title}
-    >
-      <div className="modal-content">
-        <Title>{title}</Title>
-        <Body>{body}</Body>
-        <ButtonGroup>
-          <button onClick={onSave}>{saveButtonText}</button>
-          <button onClick={onRequestClose}>{cancelButtonText}</button>
-        </ButtonGroup>
-      </div>
-    </StyledModal>
-  );
-}
-
-export default DynamicModal;
