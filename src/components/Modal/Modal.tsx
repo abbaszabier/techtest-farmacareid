@@ -41,6 +41,8 @@ function DynamicModal({
 
 export default DynamicModal;
 
+Modal.setAppElement("#root");
+
 const StyledModal = styled(Modal)`
   display: flex;
   justify-content: center;
